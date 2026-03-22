@@ -1,97 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:fillViewport="true"
+    android:background="#FFFFFF">
 
-    <ScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="20dp"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="117dp">
+        android:layout_height="wrap_content"
+        android:padding="24dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <EditText
+            android:id="@+id/input_nom_complet"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:minHeight="48dp"
+            android:hint="Nom &amp; Prénom (Ex : LACHGAR Mohamed)"
+            android:inputType="textPersonName"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-            <!-- Libellés + champs -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nom  Prénom"
-                android:textStyle="bold" />
+        <EditText
+            android:id="@+id/input_courriel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:layout_marginTop="20dp"
+            android:hint="Email (Ex : user@gmail.com)"
+            android:inputType="textEmailAddress"
+            app:layout_constraintTop_toBottomOf="@id/input_nom_complet"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-            <EditText
-                android:id="@+id/nom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Ex : LACHGAR Mohamed"
-                android:inputType="textPersonName" />
+        <EditText
+            android:id="@+id/input_telephone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:layout_marginTop="20dp"
+            android:hint="Téléphone (Ex : +212676000000)"
+            android:inputType="phone"
+            app:layout_constraintTop_toBottomOf="@id/input_courriel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Email"
-                android:textStyle="bold" />
+        <EditText
+            android:id="@+id/input_domicile"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:layout_marginTop="20dp"
+            android:hint="Adresse (Ex : 23, Hay Salam...)"
+            android:inputType="textPostalAddress"
+            app:layout_constraintTop_toBottomOf="@id/input_telephone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-            <EditText
-                android:id="@+id/email"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Ex : user@gmail.com"
-                android:inputType="textEmailAddress" />
+        <EditText
+            android:id="@+id/input_cite"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:layout_marginTop="20dp"
+            android:hint="Ville (Ex : Agadir)"
+            android:inputType="textCapWords"
+            app:layout_constraintTop_toBottomOf="@id/input_domicile"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Téléphone"
-                android:textStyle="bold" />
+        <Button
+            android:id="@+id/bouton_validation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:padding="14dp"
+            android:text="CONFIRMER L'ENVOI"
+            app:layout_constraintTop_toBottomOf="@id/input_cite"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-            <EditText
-                android:id="@+id/phone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Ex : +212676000000"
-                android:inputType="phone" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Adresse"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/adresse"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Ex : 23, Hay Salam ..."
-                android:inputType="textPostalAddress" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ville"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/ville"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Ex : Agadir"
-                android:inputType="textCapWords" />
-
-            <Button
-                android:id="@+id/btnEnvoyer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="Envoyer" />
-        </LinearLayout>
-    </ScrollView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
