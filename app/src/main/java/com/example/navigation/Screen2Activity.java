@@ -2,6 +2,7 @@ package com.example.navigation;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -9,43 +10,71 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class Screen2Activity extends AppCompatActivity {
 
-    private TextView recap;
-    private Button btnRetour;
+    // Renamed UI components
+    private TextView summaryDisplay;
+    private Button goBackBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_screen2); // relie au XML du récap
+        setContentView(R.layout.activity_screen2);
 
-        recap = findViewById(R.id.recap);
-        btnRetour = findViewById(R.id.btnRetour);
-
-        // 1) Récupérer l'Intent qui a lancé cet écran
-        Intent intent = getIntent();
-
-        // 2) Extraire les données envoyées depuis MainActivity
-        String nom     = intent.getStringExtra("nom");
-        String email   = intent.getStringExtra("email");
-        String phone   = intent.getStringExtra("phone");
-        String adresse = intent.getStringExtra("adresse");
-        String ville   = intent.getStringExtra("ville");
-
-        // 3) Construire un texte formaté (affichage multi-lignes)
-        String resume = "Nom : " + safe(nom) +
-                "\nEmail : " + safe(email) +
-                "\nPhone : " + safe(phone) +
-                "\nAdresse : " + safe(adresse) +
-                "\nVille : " + safe(ville);
-
-        // 4) Afficher le récapitulatif
-        recap.setText(resume);
-
-        // 5) Bouton Retour : fermer cet écran et revenir au précédent
-        btnRetour.setOnClickListener(v -> finish());
+        // Delegating setup to keep onCreate clean
+        bindInterface();
+        processIncomingData();
     }
 
-    // Petite aide : si une valeur est null/vides, retourner "—"
-    private String safe(String s) {
-        return (s == null || s.trim().isEmpty()) ? "—" : s.trim();
+    // Separated the findViewById and click listener logic
+    private void bindInterface() {
+        summaryDisplay = findViewById(R.id.recap);
+        goBackBtn = findViewById(R.id.btnRetour);
+
+        // Using a method reference instead of a lambda (v -> finish())
+        goBackBtn.setOnClickListener(this::closeCurrentScreen);
+    }
+
+    // Separated the data extraction and display logic
+    private void processIncomingData() {
+        Intent incomingData = getIntent();
+
+        // Assuming the standard putExtra was used. 
+        // (Note: If using the Bundle from the previous example, you would use incomingData.getExtras() here instead)
+        String fetchedName = incomingData.getStringExtra("nom");
+        String fetchedEmail = incomingData.getStringExtra("email");
+        String fetchedPhone = incomingData.getStringExtra("phone");
+        String fetchedAddress = incomingData.getStringExtra("adresse");
+        String fetchedCity = incomingData.getStringExtra("ville");
+
+        // Using StringBuilder instead of standard string concatenation (+) for better memory efficiency
+        StringBuilder textBuilder = new StringBuilder();
+        
+        textBuilder.append("Nom : ").append(validateData(fetchedName)).append("\n");
+        textBuilder.append("Email : ").append(validateData(fetchedEmail)).append("\n");
+        textBuilder.append("Phone : ").append(validateData(fetchedPhone)).append("\n");
+        textBuilder.append("Adresse : ").append(validateData(fetchedAddress)).append("\n");
+        textBuilder.append("Ville : ").append(validateData(fetchedCity));
+
+        // Pushing the final built string to the TextView
+        summaryDisplay.setText(textBuilder.toString());
+    }
+
+    // The finish() call isolated in its own method
+    private void closeCurrentScreen(View view) {
+        finish();
+    }
+
+    // Rewrote the "safe" helper method to avoid the ternary operator (? :) and use explicit conditions
+    private String validateData(String rawText) {
+        if (rawText == null) {
+            return "—";
+        }
+        
+        String cleanText = rawText.trim();
+        
+        if (cleanText.isEmpty()) {
+            return "—";
+        }
+        
+        return cleanText;
     }
 }
