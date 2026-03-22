@@ -2,65 +2,89 @@ package com.example.navigation;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
 
-    // 1) Références vers les champs de saisie
-    private EditText nom, email, phone, adresse, ville;
+    // 1) Using Constants for Intent keys prevents typos across different Activity files
+    public static final String KEY_NAME = "nom";
+    public static final String KEY_EMAIL = "email";
+    public static final String KEY_PHONE = "phone";
+    public static final String KEY_ADDRESS = "adresse";
+    public static final String KEY_CITY = "ville";
 
-    // 2) Référence vers le bouton
-    private Button btnEnvoyer;
+    // 2) Completely renamed variables for the input fields
+    private EditText fieldFullName;
+    private EditText fieldEmailAddress;
+    private EditText fieldPhoneNumber;
+    private EditText fieldStreetAddress;
+    private EditText fieldCityLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // 3) Cycle de vie : onCreate est appelé à la création de l'écran
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main); // 4) Lie l'UI XML à cette Activity
+        setContentView(R.layout.activity_main);
 
-        // 5) Récupérer les vues par leurs IDs (définis dans XML)
-        nom     = findViewById(R.id.nom);
-        email   = findViewById(R.id.email);
-        phone   = findViewById(R.id.phone);
-        adresse = findViewById(R.id.adresse);
-        ville   = findViewById(R.id.ville);
-        btnEnvoyer = findViewById(R.id.btnEnvoyer);
+        // Delegating the view setup to keep onCreate() clean and readable
+        initializeUIComponents();
+    }
 
-        // 6) Écouter le clic sur "Envoyer"
-        btnEnvoyer.setOnClickListener(v -> {
-            // 6.1) Lire le texte des champs
-            String sNom     = nom.getText().toString().trim();
-            String sEmail   = email.getText().toString().trim();
-            String sPhone   = phone.getText().toString().trim();
-            String sAdresse = adresse.getText().toString().trim();
-            String sVille   = ville.getText().toString().trim();
+    // Extracted method to handle all the findViewById calls
+    private void initializeUIComponents() {
+        fieldFullName = findViewById(R.id.nom);
+        fieldEmailAddress = findViewById(R.id.email);
+        fieldPhoneNumber = findViewById(R.id.phone);
+        fieldStreetAddress = findViewById(R.id.adresse);
+        fieldCityLocation = findViewById(R.id.ville);
 
-            // 6.2) Validation ultra-simple (débutant) : champs obligatoires
-            if (sNom.isEmpty() || sEmail.isEmpty()) {
-                Toast.makeText(this, "Nom et Email sont obligatoires.", Toast.LENGTH_SHORT).show();
-                return; // stoppe l'envoi
-            }
+        Button submitDataBtn = findViewById(R.id.btnEnvoyer);
+        
+        // Using a "Method Reference" (this::...) instead of a lambda or inner class
+        submitDataBtn.setOnClickListener(this::processAndNavigate);
+    }
 
-            // 6.3) Construire un Intent explicite vers l'écran 2
-            Intent i = new Intent(MainActivity.this, Screen2Activity.class);
+    // Dedicated method that gets triggered when the button is clicked
+    private void processAndNavigate(View view) {
+        // Extracting values into new string variables
+        String valName = fieldFullName.getText().toString().trim();
+        String valEmail = fieldEmailAddress.getText().toString().trim();
+        String valPhone = fieldPhoneNumber.getText().toString().trim();
+        String valAddress = fieldStreetAddress.getText().toString().trim();
+        String valCity = fieldCityLocation.getText().toString().trim();
 
-            // 6.4) Passer les données avec des « extras » (clé/valeur)
-            i.putExtra("nom", sNom);
-            i.putExtra("email", sEmail);
-            i.putExtra("phone", sPhone);
-            i.putExtra("adresse", sAdresse);
-            i.putExtra("ville", sVille);
+        // Calling a custom validation helper method
+        if (isInputMissing(valName, valEmail)) {
+            displayWarning("Nom et Email sont obligatoires.");
+            return; // Stops execution
+        }
 
-            // 6.5) Démarrer l'activité de récapitulatif
-            startActivity(i);
-        });
+        // ALTERNATIVE METHOD: Using a Bundle to group all data together first
+        Bundle navigationData = new Bundle();
+        navigationData.putString(KEY_NAME, valName);
+        navigationData.putString(KEY_EMAIL, valEmail);
+        navigationData.putString(KEY_PHONE, valPhone);
+        navigationData.putString(KEY_ADDRESS, valAddress);
+        navigationData.putString(KEY_CITY, valCity);
+
+        // Creating the Intent and attaching the entire Bundle at once
+        Intent nextScreenIntent = new Intent(MainActivity.this, Screen2Activity.class);
+        nextScreenIntent.putExtras(navigationData); 
+
+        startActivity(nextScreenIntent);
+    }
+
+    // Helper method to keep validation logic separate
+    private boolean isInputMissing(String nameToCheck, String emailToCheck) {
+        return nameToCheck.isEmpty() || emailToCheck.isEmpty();
+    }
+
+    // Helper method to simplify Toast creation
+    private void displayWarning(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
